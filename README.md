@@ -1,10 +1,9 @@
 # Panel interactivo de vehículos usados — Sprint 7
 
-## Descripción
+Aplicación de Streamlit para explorar anuncios de vehículos usados en Estados Unidos con datos del Sprint 7 de TripleTen.
+El panel muestra estadísticas descriptivas, un histograma del odómetro y un gráfico de dispersión de precio frente a odómetro.
 
-Desarrollamos una aplicación web para explorar anuncios de vehículos usados en Estados Unidos.
-Utilizamos Python, pandas, Plotly y Streamlit para mostrar estadísticas y visualizaciones interactivas.
-El enfoque del proyecto es crear y desplegar una aplicación web reproducible.
+[Abrir el panel interactivo en Render](https://sprint-7-dashboard-vehiculos.onrender.com/)
 
 ## Funcionalidades
 
@@ -14,10 +13,6 @@ El enfoque del proyecto es crear y desplegar una aplicación web reproducible.
 - Comparamos precio y kilometraje con un gráfico de dispersión interactivo.
 - Elegimos qué visualizaciones mostrar mediante casillas de verificación.
 - Podemos explorar una muestra de los registros originales.
-
-## Aplicación desplegada
-
-[Abrir el panel interactivo en Render](https://sprint-7-dashboard-vehiculos.onrender.com/)
 
 ## Estructura del proyecto
 
@@ -42,13 +37,13 @@ El archivo original `vehicles_us.csv`, proporcionado por TripleTen, está en la 
 Con Python 3.12, ejecutamos desde la carpeta que contiene `app.py`.
 
 ```powershell
-python -m venv .venv
-.\.venv\Scripts\Activate.ps1
+python -m venv vehicles_env
+.\vehicles_env\Scripts\Activate.ps1
 python -m pip install -r requirements.txt
 python -m streamlit run app.py
 ```
 
-Si utilizamos PyCharm, seleccionamos el intérprete `.venv\Scripts\python.exe`.
+Seleccionamos `vehicles_env\Scripts\python.exe` como intérprete en el editor.
 La aplicación se abre habitualmente en `http://localhost:8501`.
 
 ## Notebook de análisis
@@ -79,7 +74,7 @@ En JupyterLab, ejecutamos todas las celdas de `notebooks/EDA.ipynb` con el kerne
    ```
 
 5. Configuramos `/_stcore/health` como ruta de comprobación de salud. Tras desplegar, abrimos la URL pública y comprobamos que aparecen los dos gráficos y responden los filtros.
-6. Copiamos esa URL real en la sección "Aplicación desplegada" de este README.
+6. Copiamos la URL pública al inicio del README.
 7. Actualizamos el repositorio público con el README y entregamos su enlace a TripleTen.
 
 [Configuración de la versión de Python en Render](https://render.com/docs/python-version) · [Servicios web y puerto en Render](https://render.com/docs/web-services)

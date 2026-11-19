@@ -11,8 +11,7 @@ DATA_PATH = Path(__file__).resolve().parent / "vehicles_us.csv"
 REQUIRED_COLUMNS = {"price", "odometer", "model_year", "type", "condition"}
 
 st.set_page_config(
-    page_title="Vehículos usados | Panel interactivo",
-    page_icon="🚗",
+    page_title="Mercado de vehículos usados | TripleTen",
     layout="wide",
     initial_sidebar_state="expanded",
 )
@@ -33,10 +32,10 @@ def load_data(path: str) -> pd.DataFrame:
     return dataframe
 
 
-st.title("🚗 Mercado de vehículos usados en Estados Unidos")
+st.title("Mercado de vehículos usados")
 st.write(
-    "Exploramos anuncios de vehículos mediante filtros y gráficos interactivos. "
-    "Los datos provienen del archivo vehicles_us.csv utilizado en el Sprint 7 de TripleTen."
+    "Anuncios de Estados Unidos. Explora cómo cambian el precio y el odómetro "
+    "por tipo, estado y año del modelo."
 )
 
 if not DATA_PATH.is_file():
@@ -91,25 +90,22 @@ if not years.empty:
         if chosen_years != full_year_range:
             filtered = filtered.loc[filtered["model_year"].between(*chosen_years)]
 
-st.sidebar.caption(
-    "Los filtros modifican las estadísticas y los gráficos. "
-    "No sustituimos los valores faltantes por datos inventados."
-)
-
 if filtered.empty:
     st.warning("No hay anuncios para los filtros seleccionados.")
     st.stop()
 
 left, middle, right = st.columns(3)
-left.metric("Anuncios filtrados", str(len(filtered)))
+left.metric("Anuncios filtrados", str(len(filtered)), border=True)
 middle.metric(
     "Precio mediano (USD)",
     f"${filtered['price'].median():.0f}" if filtered["price"].notna().any() else "Sin datos",
+    border=True,
 )
 right.metric(
     "Odómetro mediano (millas)",
     f"{filtered['odometer'].median():.0f}"
     if filtered["odometer"].notna().any() else "Sin datos",
+    border=True,
 )
 
 if price_limit is not None:
@@ -118,53 +114,48 @@ if price_limit is not None:
         "Puedes incluirlos desde la barra lateral."
     )
 
-st.divider()
-histogram_on = st.checkbox("Mostrar histograma del kilometraje", value=True)
+st.header("Visualizaciones", divider="gray")
+histogram_panel, scatter_panel = st.columns(2, gap="medium")
+histogram_on = histogram_panel.checkbox("Mostrar histograma del kilometraje", value=True)
 if histogram_on:
     histogram_data = filtered.dropna(subset=["odometer"])
     histogram_data = histogram_data.loc[histogram_data["odometer"] >= 0]
     if histogram_data.empty:
-        st.info("No hay valores de odómetro válidos para este gráfico.")
+        histogram_panel.info("No hay valores de odómetro válidos para este gráfico.")
     else:
         fig_hist = px.histogram(
             histogram_data,
             x="odometer",
             nbins=55,
             labels={"odometer": "Odómetro (millas)"},
-            title="Distribución del kilometraje anunciado",
+            title="Distribución del odómetro",
+            color_discrete_sequence=["#315B7D"],
         )
         fig_hist.update_layout(
             yaxis_title="Número de anuncios", bargap=0.05,
             margin=dict(l=10, r=10, t=55, b=15),
         )
-        st.plotly_chart(fig_hist, width="stretch")
-        st.caption(
-            "El histograma permite identificar dónde se concentran los kilometrajes "
-            "y observar la dispersión de los anuncios."
-        )
+        histogram_panel.plotly_chart(fig_hist, width="stretch")
 
-scatter_on = st.checkbox("Mostrar dispersión entre kilometraje y precio", value=True)
+scatter_on = scatter_panel.checkbox("Mostrar dispersión entre kilometraje y precio", value=True)
 if scatter_on:
     scatter_data = filtered.dropna(subset=["price", "odometer"])
     scatter_data = scatter_data.loc[
         (scatter_data["price"] >= 0) & (scatter_data["odometer"] >= 0)
     ]
     if scatter_data.empty:
-        st.info("No hay suficientes valores de precio y odómetro para este gráfico.")
+        scatter_panel.info("No hay suficientes valores de precio y odómetro para este gráfico.")
     else:
         # Evita una interfaz lenta al mostrar demasiados puntos en una sesión gratuita.
         sample_size = 12000
-        if len(scatter_data) > sample_size:
+        sampled = len(scatter_data) > sample_size
+        if sampled:
             scatter_data = scatter_data.sample(sample_size, random_state=42)
-            st.caption(
-                f"Mostramos una muestra reproducible de {sample_size} anuncios "
-                "para mantener fluida la visualización."
-            )
 
         fig_scatter = px.scatter(
             scatter_data,
             x="odometer", y="price", color="condition",
-            title="Precio anunciado según el kilometraje",
+            title="Precio por odómetro",
             labels={
                 "odometer": "Odómetro (millas)",
                 "price": "Precio (USD)",
@@ -174,18 +165,16 @@ if scatter_on:
             render_mode="webgl",
             hover_data=["model_year", "type"],
         )
-        fig_scatter.update_layout(margin=dict(l=10, r=10, t=55, b=15))
-        st.plotly_chart(fig_scatter, width="stretch")
-        st.caption(
-            "Cada punto representa un anuncio. Observamos la relación entre precio "
-            "y kilometraje, teniendo en cuenta el estado de los vehículos. "
-            "La asociación visual no demuestra causalidad."
+        fig_scatter.update_layout(
+            margin=dict(l=10, r=10, t=55, b=15),
+            legend=dict(orientation="h", x=0, y=-0.24),
         )
+        scatter_panel.plotly_chart(fig_scatter, width="stretch")
+        if sampled:
+            scatter_panel.caption("Muestra reproducible de 12 000 anuncios.")
 
 if st.checkbox("Mostrar una muestra de los datos"):
     st.dataframe(filtered.head(50), width="stretch", hide_index=True)
 
 st.divider()
-st.caption(
-    "Proyecto del Sprint 7 de TripleTen · Elaborado con Python, pandas, Plotly y Streamlit."
-)
+st.caption("Fuente: vehicles_us.csv · Proyecto del Sprint 7 de TripleTen.")
