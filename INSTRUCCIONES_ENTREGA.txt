@@ -1,0 +1,9 @@
+ENTREGA DEL PROYECTO SPRINT 7
+
+El CSV original vehicles_us.csv está en la raíz del proyecto.
+El README.md reúne los pasos para ejecutar la app y el notebook localmente,
+publicar en GitHub y configurar Render.
+
+La publicación queda pendiente de aprobación. Después del despliegue,
+agrega la URL pública verificada de Render al README y entrega a TripleTen
+el enlace al repositorio público de GitHub.
