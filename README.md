@@ -17,7 +17,7 @@ El enfoque del proyecto es crear y desplegar una aplicación web reproducible.
 
 ## Aplicación desplegada
 
-Despliegue pendiente de aprobación. Una vez publicado y verificado el servicio en Render, se agregará aquí su URL pública.
+[Abrir el panel interactivo en Render](https://sprint-7-dashboard-vehiculos.onrender.com/)
 
 ## Estructura del proyecto
 
@@ -64,8 +64,8 @@ En JupyterLab, ejecutamos todas las celdas de `notebooks/EDA.ipynb` con el kerne
 
 ## Publicación en Render
 
-1. Tras la aprobación de la publicación, creamos un repositorio público de GitHub. Subimos el contenido de esta carpeta como raíz del repositorio, incluidos el CSV, el notebook y los archivos de configuración.
-2. Conectamos ese repositorio a un nuevo servicio **Web Service** de Render, con entorno Python. Dejamos vacío **Root Directory**. Render toma la rama de Python de `.python-version`.
+1. Creamos un repositorio público de GitHub y subimos el contenido de esta carpeta como raíz del repositorio, incluidos el CSV, el notebook y los archivos de configuración.
+2. Conectamos ese repositorio a un nuevo servicio **Web Service** de Render con entorno Python. Dejamos vacío **Root Directory**. Render toma la versión de Python de `.python-version`.
 3. Establecemos el comando de compilación.
 
    ```bash
